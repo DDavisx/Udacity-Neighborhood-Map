@@ -15,7 +15,7 @@ This project is the local Neighborhood Map. The contents are an attempt to show 
 
 ..or if your using Atom IDE
 
-9. if using Atom as your IDE try Atom-live-server package
+9.  Try the Atom-live-server package
   - this sets up a local server pointing at the project directory using port 3000.(<http://localhost:3000>)
 
 ..or try
