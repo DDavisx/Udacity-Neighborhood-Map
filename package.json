@@ -1,0 +1,13 @@
+{
+  "name": "Neighborhood",
+  "version": "1.0",
+  "description": "This project is the local Neighborhood Map. The contents are an attempt to show comprehension and understanding of organizational Frameworks that have been used and learned throughout the course. This project also will show an understanding and implementation of the google map api as well as a third party api of the students choice.",
+  "dependencies": {
+    "cli": "^1.0.1",
+    "grunt": "^1.0.1",
+    "grunt-connect": "^0.2.0",
+    "grunt-contrib-connect": "^1.0.2",
+    "grunt-contrib-cssmin": "^2.2.1",
+    "grunt-contrib-jshint": "~0.10.0"
+  }
+}

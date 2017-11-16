@@ -1,0 +1,152 @@
+html, body { height: 100%; margin: 0; padding: 0; }
+#map { height: 100%; }
+
+.menu {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 99;
+  width:260px;
+  max-width: 85%;
+  background-color: rgba(84, 84, 84, 0.9);
+  padding: 16px;
+  color: #fff8dc;
+}
+
+.menu ul {
+  list-style: none;
+  padding: 0;
+  border: solid 1px #fff
+}
+
+.menu li {
+  margin: 0;
+  border-bottom: solid 1px #fff
+}
+
+.menu .menu-item a {
+  display: block;
+  padding: 16px 0 16px 16px;
+  color: #fff;
+  text-decoration: none;
+  width: inherit;
+}
+
+.menu .menu-item a:hover {
+  color: #000;
+  background-color: #ccc;
+  width: inherit;
+}
+
+.info-image {
+  width: 130px;
+  padding: .5rem .25rem;
+}
+
+.info-left {
+  float: left;
+  width : 160px;
+}
+
+.info-right {
+  float: right;
+  width : 160px;
+}
+
+.info-bottom {
+  padding-top: 1rem;
+  clear: both;
+}
+
+.info-description {
+  padding: .75rem 0 0;
+}
+
+.info-title {
+  font-size: 1.125rem;
+  font-weight: bold;
+  padding: .75rem 0 0;
+}
+
+.info-error {
+  font-size: 1.25rem;
+  font-weight: bold;
+  max-width: 180px;
+}
+
+.search {
+  font-size: 18px;
+  max-width: 80%;
+}
+
+.open {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 97;
+  background-color: rgba(84, 84, 84, 0.9);
+  padding: 4px;
+  font-size: 20px;
+  text-decoration: none;
+  display:none;
+}
+
+.open {
+   color: #fff;
+}
+
+.open:hover {
+   color: #ccc;
+}
+
+.close {
+   float: right;
+   font-size: 18px;
+   color: #fff;
+   text-decoration: none;
+}
+
+.close:hover {
+   float: right;
+   font-size: 18px;
+   color: #ccc;
+}
+
+.map-error {
+  font-size: 18px;
+  margin: 48px auto;
+  text-align: center;
+  width: 250px;
+}
+
+.brewery-img {
+  margin: 0 auto;
+  width: 215px;
+}
+.brewery-img {
+  padding-top: 1rem;
+}
+
+.brewery-img img {
+  vertical-align: middle;
+  width: 40px;
+}
+
+.brewery-img a,
+.brewery-img a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+@media screen and (max-width: 380px) {
+  .info-left img {
+    display:block;
+    width: 60%;
+    margin: 0 auto;
+  }
+  .info-left,
+  .info-right {
+      float: none;
+      width : 100%;
+  }
+}
