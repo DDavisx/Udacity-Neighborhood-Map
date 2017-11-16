@@ -77,7 +77,14 @@ function AppViewModel(locationData) {
   self.renderMarkers = function(locations, animationType) {
     self.ClearMarkers();
     var bounds = new google.maps.LatLngBounds();
-
+    var listenForMarkerClick = function ( marker) {
+      //Clicking a marker will center and display info window
+      marker.addListener('click', function() {
+        self.animateMarkerBounce(this.id);
+        map.setCenter(this.getPosition());
+        self.getBreweryInfo(this, this.brewid);
+      });
+    };
     for (var i = 0; i < locations.length; i++) {
       var locationItem = locations[i];
       var marker = new google.maps.Marker({
@@ -88,14 +95,7 @@ function AppViewModel(locationData) {
         title: locationItem.title,
         brewid: locationItem.brewid
       });
-
-      //Clicking a marker will center and display info window
-      marker.addListener('click', function() {
-        self.animateMarkerBounce(this.id);
-        map.setCenter(this.getPosition());
-        self.getBreweryInfo(this, this.brewid);
-      });
-
+      listenForMarkerClick(marker);
       self.Markers.push(marker);
       bounds.extend(marker.position);
     }
@@ -106,7 +106,7 @@ function AppViewModel(locationData) {
     map = new google.maps.Map(document.getElementById('map'), {
       center: {
         lat: 42.7341925,
-        lng: -84.5455013
+        lng: -84.5455013,
       },
       disableDefaultUI: true,
       zoom: 13
