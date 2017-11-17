@@ -8,10 +8,10 @@
  </head>
  <body>
 
-    <a class="open"  alt="Show Menu" data-bind="click: showMenu" href="#" >&#9776;</a>
-    <div class="menu" >
+    <a class="open"  alt="Show Menu" data-bind="visible: !showMenu(), click: showMenuClick" href="#" >&#9776;</a>
+    <div class="menu"  data-bind="visible: showMenu" >
      <input class="search" data-bind="textInput: appFilter, valueUpdate: 'keyup'" placeholder="Search Locations...">
-     <a class="close"  alt="Hide Menu" data-bind="click: hideMenu" href="#" >✖</a>
+     <a class="close"  alt="Hide Menu" data-bind="click: hideMenuClick" href="#" >✖</a>
       <ul data-bind="foreach: filteredLocations">
        <li class="menu-item" data-bind="click: $parent.menuItemClick">
            <a href="#" data-bind="text: title"></a>
@@ -20,30 +20,7 @@
       <div class="filter-message" data-bind="text: filterMessage" ></div>
       <div class="brewery-img"><a href="http://www.brewerydb.com" alt="Brewery Database" ><img src="https://www.brewerydb.com/img/badge.png" />  Powered by Brewery DB!</a></div>
    </div>
-
-   <div id="map"></div>
-
-   <script id="info-template" type="text/x-handlebars-template">
-      {{#if error }}
-        <div class='info-error' >{{error}}</div>
-      {{else}}
-      <div>
-         <div class="info-left" >
-            <img class="info-image" src="{{images.squareMedium}}" />
-         </div>
-         <div class="info-right" >
-           <div class="info-title">{{name}}</div>
-           <div class="info-description">{{description}}
-        </div>
-         </div>
-      </div>
-      <div class="info-bottom">
-         <div>{{#if website }}Website : <a href="{{website}}">{{website}}</a>{{/if}}</div>
-      </div>
-      {{/if}}
-   </script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+    <div id="map"><div data-bind="text: mapError"></div></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
     <script src="js/locations.js"></script>

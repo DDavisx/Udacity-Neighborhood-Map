@@ -88,7 +88,6 @@ html, body { height: 100%; margin: 0; padding: 0; }
   padding: 4px;
   font-size: 20px;
   text-decoration: none;
-  display:none;
 }
 
 .open {

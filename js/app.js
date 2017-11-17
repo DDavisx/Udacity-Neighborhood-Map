@@ -1,9 +1,11 @@
-function AppViewModel(locationData) {
+function AppViewModel( locationData ) {
   var self = this;
   var infowindow = new google.maps.InfoWindow();
-  self.locations = ko.observableArray(locationData);
+  self.locations = ko.observableArray( locationData );
   self.appFilter = ko.observable('');
   self.filterMessage = ko.observable();
+  self.showMenu = ko.observable( true );
+  self.showMobileMenu = ko.observable( false );
   self.Markers = [];
 
   // https://groups.google.com/forum/#!topic/brewerydb-api/xMRMXNwK5P8
@@ -11,159 +13,167 @@ function AppViewModel(locationData) {
   // also note that Developer API for Brewerydb is limited to 400 requests per day.
 
   // Request Brewery Data from 3rd party Api.
-  self.getBreweryInfo = function(marker, brewId) {
+  self.getBreweryInfo = function ( marker, brewId ) {
     var BreweryUrl = 'https://api.brewerydb.com/v2/brewery/' + brewId +
       '?key=daeec71cc26d468d4934a3b36c4cdbd0';
     var corsProxy = 'https://cors-anywhere.herokuapp.com:443/';
     var Url = corsProxy + BreweryUrl;
     var result = 'null';
-    $.getJSON(Url, function(dataObj) {
-      self.createInfoWindow(marker, dataObj.data);
-    }).fail(function(jqXHR, textStatus, errorThrown) {
-      self.createInfoWindow(marker, {
+    $.getJSON( Url, function ( dataObj ) {
+      self.createInfoWindow( marker, dataObj.data );
+    } ).fail( function ( jqXHR, textStatus, errorThrown ) {
+      self.createInfoWindow( marker, {
         'error': 'Sorry! An error has occured. Please try again later.'
-      });
-    });
+      } );
+    } );
   };
 
   // remove the marker Bounce animation
-  self.removeMarkerBounce = function(marker) {
-    setTimeout(function() {
-      marker.setAnimation(null);
-    }, 1400);
+  self.removeMarkerBounce = function ( marker ) {
+    setTimeout( function () {
+      marker.setAnimation( null );
+    }, 1400 );
   };
 
   // Begin the marker Bounce animation
-  self.animateMarkerBounce = function(id) {
-    for (var i = 0; i < self.Markers.length; i++) {
-      var marker = self.Markers[i];
-      if (marker.id == id) {
-        marker.setAnimation(google.maps.Animation.BOUNCE);
-        self.removeMarkerBounce(marker);
+  self.animateMarkerBounce = function ( id ) {
+    for ( var i = 0; i < self.Markers.length; i++ ) {
+      var marker = self.Markers[ i ];
+      if ( marker.id == id ) {
+        marker.setAnimation( google.maps.Animation.BOUNCE );
+        self.removeMarkerBounce( marker );
       } else {
-        marker.setAnimation(null);
+        marker.setAnimation( null );
       }
     }
   };
 
-  //Build Google info WIndow using data from the 3rd party Api
-  self.createInfoWindow = function(marker, data) {
-    var source = $("#info-template").html();
-    var template = Handlebars.compile(source);
-    infowindow.setContent(template(data));
-    infowindow.open(map, marker);
+  //Construct Google info WIndow using data from the 3rd party Api
+  self.createInfoWindow = function ( marker, data ) {
+    var template;
+    if ( data.error ) {
+      template = '<div class="info-error" >' + data.error + '</div>';
+    } else {
+      template = '<div>' +
+        '<div class="info-left" ><img class="info-image" src="' + data.images.squareMedium + '" /></div>' +
+        '<div class="info-right" ><div class="info-title">' + data.name + '</div>' +
+        '<div class="info-description">' + data.description + '</div></div></div><div class="info-bottom"><div>';
+      if ( data.website ) {
+        template += 'Website : <a href="' + data.website + '">' + data.website + '</a>';
+      }
+      template += '</div></div>';
+    }
+    infowindow.setContent( template );
+    infowindow.open( map, marker );
   };
 
   //Remove the Google Markers
-  self.ClearMarkers = function() {
-    for (var i = 0; i < self.Markers.length; i++) {
-      self.Markers[i].setMap(null);
+  self.ClearMarkers = function () {
+    for ( var i = 0; i < self.Markers.length; i++ ) {
+      self.Markers[ i ].setMap( null );
     }
   };
 
   //Capture click of Menu item and center map on corresponding Marker
   //and display an InfoWindow
-  self.menuItemClick = function(e) {
+  self.menuItemClick = function ( e ) {
     infowindow.close();
-    self.animateMarkerBounce(e.id);
-    var marker = self.Markers.find(function(item) {
+    self.animateMarkerBounce( e.id );
+    var marker = self.Markers.find( function ( item ) {
       return item.id == e.id;
-    });
-    map.setCenter(marker.getPosition());
-    self.getBreweryInfo(marker, e.brewid);
+    } );
+    map.setCenter( marker.getPosition() );
+    self.getBreweryInfo( marker, e.brewid );
   };
 
   //Build markers to display on the Map.
-  self.renderMarkers = function(locations, animationType) {
+  self.renderMarkers = function ( locations, animationType ) {
     self.ClearMarkers();
     var bounds = new google.maps.LatLngBounds();
-    var listenForMarkerClick = function ( marker) {
+    var listenForMarkerClick = function ( marker ) {
       //Clicking a marker will center and display info window
-      marker.addListener('click', function() {
-        self.animateMarkerBounce(this.id);
-        map.setCenter(this.getPosition());
-        self.getBreweryInfo(this, this.brewid);
-      });
+      marker.addListener( 'click', function () {
+        self.animateMarkerBounce( this.id );
+        map.setCenter( this.getPosition() );
+        self.getBreweryInfo( this, this.brewid );
+      } );
     };
-    for (var i = 0; i < locations.length; i++) {
-      var locationItem = locations[i];
-      var marker = new google.maps.Marker({
+    for ( var i = 0; i < locations.length; i++ ) {
+      var locationItem = locations[ i ];
+      var marker = new google.maps.Marker( {
         animation: animationType,
         id: locationItem.id,
         map: map,
         position: locationItem.location,
         title: locationItem.title,
         brewid: locationItem.brewid
-      });
-      listenForMarkerClick(marker);
-      self.Markers.push(marker);
-      bounds.extend(marker.position);
+      } );
+      listenForMarkerClick( marker );
+      self.Markers.push( marker );
+      bounds.extend( marker.position );
     }
   };
 
   //Initialize the google map
-  self.renderMap = function() {
-    map = new google.maps.Map(document.getElementById('map'), {
+  self.renderMap = function () {
+    map = new google.maps.Map( document.getElementById( 'map' ), {
       center: {
         lat: 42.7341925,
         lng: -84.5455013,
       },
       disableDefaultUI: true,
       zoom: 13
-    });
+    } );
   };
   self.renderMap();
 
   //Filter the Locations baseed on the search field and return to array
-  this.filteredLocations = ko.computed(function() {
+  this.filteredLocations = ko.computed( function () {
     var filterResult = [];
-    self.filterMessage('no');
+    self.filterMessage( 'no' );
     var bounds = new google.maps.LatLngBounds();
-    for (var i = 0; i < self.locations().length; i++) {
-      var location = self.locations()[i];
-      if (location.title.toLowerCase().includes(self.appFilter().toLowerCase())) {
-        filterResult.push(location);
-        bounds.extend(new google.maps.LatLng(location.location.lat,
-          location.location.lng));
+    for ( var i = 0; i < self.locations().length; i++ ) {
+      var location = self.locations()[ i ];
+      if ( location.title.toLowerCase().includes( self.appFilter().toLowerCase() ) ) {
+        filterResult.push( location );
+        bounds.extend( new google.maps.LatLng( location.location.lat,
+          location.location.lng ) );
       }
     }
-    self.renderMarkers(filterResult, google.maps.Animation.Fade);
-    map.fitBounds(bounds);
-    map.setCenter(bounds.getCenter());
-    self.filterMessage(filterResult.length <= 0 ? 'Sorry! no results found' :
-      '');
+    self.renderMarkers( filterResult, google.maps.Animation.Fade );
+    map.fitBounds( bounds );
+    map.setCenter( bounds.getCenter() );
+    self.filterMessage( filterResult.length <= 0 ? 'Sorry! no results found' :  '' );
     return filterResult;
-  }, this);
+  }, this );
 
   // On resize of the web page fit all markers on the screen
-  google.maps.event.addDomListener(window, "resize", function() {
+  google.maps.event.addDomListener( window, "resize", function () {
     infowindow.close();
     var bounds = new google.maps.LatLngBounds();
-    for (var i = 0; i < self.Markers.length; i++) {
-      self.Markers[i].getPosition();
-      bounds.extend(self.Markers[i].getPosition());
+    for ( var i = 0; i < self.Markers.length; i++ ) {
+      self.Markers[ i ].getPosition();
+      bounds.extend( self.Markers[ i ].getPosition() );
     }
-    map.fitBounds(bounds);
-  });
+    map.fitBounds( bounds );
+  } );
 
-  self.hideMenu = function() {
-    $('.menu').hide();
-    $('.open').show();
+  //hide the menu and show mobile menu button
+  self.hideMenuClick = function () {
+     self.showMenu( false );
   };
 
-  self.showMenu = function() {
-    $('.open').hide();
-    $('.menu').show();
+ //show the menu and hide mobile menu button
+  self.showMenuClick = function () {
+    self.showMenu( true );
   };
 }
 
-window.initApp = function() {
-  ko.applyBindings(new AppViewModel(locationData));
+window.initApp = function () {
+  ko.applyBindings( new AppViewModel( locationData ) );
 };
 
-window.appError = function() {
-  $('.menu').hide();
-  $('#map').append(
-    '<div class="map-error"> Sorry! An error has occured. Please try again later.</div>'
-  );
+window.appError = function () {
+  $( '.menu, .open' ).hide();
+  $( '#map' ).append( '<div class="map-error"> Sorry! An error has occured. Please try again later.</div>' );
 };
