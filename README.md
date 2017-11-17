@@ -26,7 +26,6 @@ This project is the local Neighborhood Map. The contents are an attempt to show 
 ### Frameworks used in this Application
 - Jquery
 - knockoutjs
-- Handlebars
 
 ### APIs used in this Application
 - google maps API
@@ -35,4 +34,3 @@ This project is the local Neighborhood Map. The contents are an attempt to show 
 ### Notes
 - Brewery DB uses a developer Api Key and Is Subject to a limit of 400 requests per day.
 - Brewery DB does not support CORS and therefore a CORS proxy has been used.
-- Handlebars was used to build and compile the Brewery DB json for display in the Google Info Window.
